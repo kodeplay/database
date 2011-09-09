@@ -29,10 +29,14 @@ class Config_Database extends Kohana_Config_Database {
         if ($config === NULL AND $group !== 'database')
             {
                 // Load all of the configuration values for this group
-                $query = DB::select('config_key', 'config_value')
+                $setting = DB::select('config_key', 'config_value')
                     ->from($this->_database_table)
-                    ->where('group_name', '=', $group)
-                    ->execute($this->_database_instance);
+                    ->where('group_name', '=', $group);
+                if(class_exists('Institution')){
+                    $instution = Institution::instance();
+                    $setting->where('institution_id', '=', $instution->id);
+                }
+                $query = $setting->execute($this->_database_instance);
 
                 if (count($query) > 0)
                     {
